@@ -1,4 +1,5 @@
-import { Amex, Mastercard, Visa } from "../assests/image/image";
+import { Amex, Mastercard, Visa, Logo, Logob } from "../assests/image/image";
+import { Facebook, Twitter, Instagram, Linkedin } from "lucide-react";
 
 export default function Footer() {
   return (
@@ -7,9 +8,10 @@ export default function Footer() {
 
         {/* LOGO + ADDRESS */}
         <div>
-          <h1 className="text-3xl font-semibold text-[#2d3b78] flex items-center gap-2">
-            <span className="text-4xl">◎</span> Trizen
-          </h1>
+          <div className="flex items-center gap-3">
+            <img src={Logo.src} alt="Logo 1" className="h-12 w-auto" />
+            <img src={Logob.src} alt="Logo 2" className="h-12 w-auto" />
+          </div>
 
           <p className="mt-4 leading-relaxed">
             Morbi convallis bibendum urna ut viverra.
@@ -27,9 +29,7 @@ export default function Footer() {
 
         {/* COMPANY */}
         <div>
-          <h2 className="text-lg font-semibold text-gray-900">
-            Company
-          </h2>
+          <h2 className="text-lg font-semibold text-gray-900">Company</h2>
           <div className="w-10 h-[3px] bg-[#2d3b78] mt-1 mb-4 rounded-full"></div>
 
           <ul className="space-y-2">
@@ -44,9 +44,7 @@ export default function Footer() {
 
         {/* OTHER LINKS */}
         <div>
-          <h2 className="text-lg font-semibold text-gray-900">
-            Other Links
-          </h2>
+          <h2 className="text-lg font-semibold text-gray-900">Other Links</h2>
           <div className="w-10 h-[3px] bg-[#2d3b78] mt-1 mb-4 rounded-full"></div>
 
           <ul className="space-y-2">
@@ -59,11 +57,9 @@ export default function Footer() {
           </ul>
         </div>
 
-        {/* SUBSCRIBE NOW */}
+        {/* SUBSCRIBE */}
         <div>
-          <h2 className="text-lg font-semibold text-gray-900">
-            Subscribe now
-          </h2>
+          <h2 className="text-lg font-semibold text-gray-900">Subscribe now</h2>
           <div className="w-10 h-[3px] bg-[#2d3b78] mt-1 mb-4 rounded-full"></div>
 
           <p className="leading-relaxed">
@@ -90,17 +86,24 @@ export default function Footer() {
 
           {/* SOCIAL ICONS */}
           <div className="flex items-center gap-4 mt-6">
-            <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">f</div>
-            <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">t</div>
-            <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">i</div>
-            <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">in</div>
+            <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
+              <Facebook className="w-5 h-5" />
+            </div>
+            <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
+              <Twitter className="w-5 h-5" />
+            </div>
+            <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
+              <Instagram className="w-5 h-5" />
+            </div>
+            <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
+              <Linkedin className="w-5 h-5" />
+            </div>
           </div>
         </div>
       </div>
 
       {/* BOTTOM LINKS */}
       <div className="max-w-7xl mx-auto px-6 mt-12 flex flex-wrap items-center justify-between gap-3 text-sm text-gray-600">
-
         <div className="flex items-center gap-4">
           <span>Terms & Conditions</span>
           <span className="w-1 h-1 bg-gray-400 rounded-full"></span>
@@ -119,7 +122,8 @@ export default function Footer() {
 
       {/* COPYRIGHT */}
       <div className="max-w-7xl mx-auto px-6 mt-6 text-center text-sm text-gray-600">
-        © 2025 Yess Booking | All Rights Reserved || Developed by <a href="/" target="_blank" rel="noopener noreferrer">CBSPL</a>.
+        © 2025 Yess Booking | All Rights Reserved || Developed by{" "}
+        <a href="/" target="_blank" rel="noopener noreferrer">CBSPL</a>.
       </div>
     </footer>
   );
