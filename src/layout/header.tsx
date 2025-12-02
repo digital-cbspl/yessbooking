@@ -29,7 +29,7 @@ export default function Header() {
     return (
         <header className="w-full text-white sticky top-0 z-30 bg-[#2d3b78]">
             {/* FIXED LOGO - Always visible */}
-            <a href="/" target="_blank" rel="noopener noreferrer">
+            <a href="/" rel="noopener noreferrer">
             <div className="absolute top-0 left-10 z-40 bg-white p-5 pl-8 cursor-pointer">
                 
                 <Image
