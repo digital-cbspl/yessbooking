@@ -18,78 +18,99 @@ import {
   Sunrise,
   Sunset,
   Moon,
-  BadgeCheck,
+  Globe,
+  Thermometer,
+  CheckCircle,
 } from "lucide-react";
 
+import { Car1, Car2, Car3 } from "@/src/assests/image/image";
+
 /* ---------------------------
-   Types & Sample Data (CAB)
+   Types & Sample Car Data
    --------------------------- */
 
-type CabItem = {
+type CarOption = {
   id: number;
-  operator: string;
-  type: string;
-  rating: string;
-  reviews: number;
-  departDate: string;
-  departTime: string;
-  departCity: string;
-  arriveDate: string;
-  arriveTime: string;
-  arriveCity: string;
-  duration: string;
-  startsAt: number;
-  seatsAvailable: number;
-  upperSeats: string[];
-  lowerSeats: string[];
-  booked?: string[];
-  female?: string[];
-  male?: string[];
-  prices?: number[];
+  title: string;
+  subtitle?: string;
+  tags: string[];
+  shortDesc: string;
+  features: string[];
+  badges: string[];
+  fuelTypePrimary: string;
+  price: number;
+  taxes: number;
+  rating?: string;
+  ratingCount?: number;
+  image?: string;
 };
 
-const dates = [
-  "01 Mon",
-  "02 Tue",
-  "03 Wed",
-  "04 Thu",
-  "05 Fri",
-  "06 Sat",
-  "07 Sun",
-  "08 Mon",
-  "09 Tue",
-  "10 Wed",
-  "11 Thu",
-];
-
-// Sample cabs
-const cabsSample: CabItem[] = [
+/* SAMPLE 3 CARS */
+const sampleOptions: CarOption[] = [
   {
     id: 1,
-    operator: "CityRide Cabs",
-    type: "Sedan AC",
-    rating: "4.8",
-    reviews: 87,
-    departDate: "01 Dec",
-    departTime: "09:30",
-    departCity: "Hyderabad",
-    arriveDate: "01 Dec",
-    arriveTime: "14:00",
-    arriveCity: "Vijayawada",
-    duration: "4:30 Hrs",
-    startsAt: 1499,
-    seatsAvailable: 4,
-    upperSeats: ["U1", "U2"],
-    lowerSeats: ["L1", "L2"],
-    booked: ["U2"],
-    female: ["L1"],
-    male: ["L2"],
-    prices: [1499, 1699, 1899],
+    title: "Mercedes-Benz",
+    subtitle: "Or Similar",
+    tags: ["HATCHBACK", "AC", "4 seats"],
+    shortDesc: "Economical car with limited luggage",
+    features: [
+      "65 kms included. After that ₹16.5/km",
+      "Free cancellation until 1 hour before pickup",
+      "Reserve this cab at ₹270 only",
+      "CNG Car",
+    ],
+    badges: ["Premium Services"],
+    fuelTypePrimary: "CNG",
+    price: 1009,
+    taxes: 109,
+    rating: "4.4",
+    ratingCount: 15,
+    image: Car1.src,
+  },
+  {
+    id: 2,
+    title: "Honda Accord Hybrid",
+    subtitle: "Or Similar",
+    tags: ["SEDAN", "AC", "4 seats"],
+    shortDesc: "Comfortable sedan with large boot space",
+    features: [
+      "75 kms included. After that ₹15.0/km",
+      "24/7 Support",
+      "Reserve at ₹300 only",
+      "Petrol Car",
+    ],
+    badges: ["Premium Services"],
+    fuelTypePrimary: "PETROL",
+    price: 1299,
+    taxes: 122,
+    rating: "4.6",
+    ratingCount: 21,
+    image: Car2.src,
+  },
+  {
+    id: 3,
+    title: "Volvo S60",
+    subtitle: "Or Similar",
+    tags: ["SUV", "AC", "6 seats"],
+    shortDesc: "Spacious SUV perfect for family trips",
+    features: [
+      "100 kms included. After that ₹18.0/km",
+      "Free cancellation until pickup",
+      "Reserve at ₹350 only",
+      "Diesel Car",
+    ],
+    badges: ["Premium Services"],
+    fuelTypePrimary: "DIESEL",
+    price: 1899,
+    taxes: 150,
+    rating: "4.7",
+    ratingCount: 35,
+    image: Car3.src,
   },
 ];
 
 /* ---------------------------
-   Sidebar Checkbox Component
+   Helper Components
    --------------------------- */
 
 function CheckItem({
@@ -113,89 +134,123 @@ function CheckItem({
   );
 }
 
+function Badge({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="inline-flex items-center text-xs font-semibold bg-[#fef3c7] text-[#92400e] px-2 py-1 rounded-md">
+      {children}
+    </span>
+  );
+}
+
 /* ---------------------------
-   Seat Layout Component
+   Car Card — EXACT DESIGN
    --------------------------- */
 
-function SeatLayout({
-  upper,
-  lower,
-  booked = [],
-  female = [],
-  male = [],
-  onClose,
-}: {
-  upper: string[];
-  lower: string[];
-  booked?: string[];
-  female?: string[];
-  male?: string[];
-  onClose: () => void;
-}) {
-  const [selected, setSelected] = useState<string[]>([]);
-
-  const toggleSeat = (s: string) => {
-    if (booked.includes(s)) return;
-    setSelected((prev) =>
-      prev.includes(s) ? prev.filter((x) => x !== s) : [...prev, s]
-    );
-  };
-
-  const seatClass = (s: string) => {
-    if (selected.includes(s)) return "bg-[#c5f0d0] border-[#2d8a5a]";
-    if (booked.includes(s)) return "bg-gray-300 border-gray-400 text-gray-600";
-    if (female.includes(s)) return "bg-pink-100 border-pink-300";
-    if (male.includes(s)) return "bg-blue-100 border-blue-300";
-    return "bg-white border-gray-300";
-  };
-
+function CarCard({ option }: { option: CarOption }) {
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-6">
-      <div className="bg-white rounded-lg w-full max-w-[1100px] h-[85vh] shadow-xl overflow-hidden flex flex-col">
+    <div className="w-full bg-white rounded-xl shadow-sm border overflow-hidden">
 
-        <div className="flex justify-between p-4 border-b">
-          <h3 className="font-semibold">Select Seats</h3>
-          <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded">
-            <X size={18} />
-          </button>
+      <div className="flex gap-6 p-5 items-start">
+
+        {/* Car Image */}
+        <div className="w-[120px] flex items-start">
+          <img
+            src={option.image}
+            alt={option.title}
+            className="w-full h-auto object-contain rounded-md"
+          />
         </div>
 
-        <div className="flex flex-1 overflow-hidden">
+        {/* Main Content */}
+        <div className="flex-1">
+          <div className="flex items-start justify-between">
+            <div>
+              <div className="flex items-center gap-3">
+                <h3 className="text-xl font-semibold">{option.title}</h3>
+                {option.subtitle && (
+                  <span className="text-xs bg-blue-50 text-blue-600 px-2 py-1 rounded-md">
+                    {option.subtitle}
+                  </span>
+                )}
+              </div>
 
-          <div className="flex-1 p-4 overflow-auto">
-            <p className="text-sm mb-2">Upper</p>
-            <div className="grid grid-cols-6 gap-3 mb-6">
-              {upper.map((s) => (
-                <button
-                  key={s}
-                  onClick={() => toggleSeat(s)}
-                  className={`border rounded px-3 py-2 ${seatClass(s)}`}
-                >
-                  {s}
-                </button>
-              ))}
+              {/* Tags */}
+              <div className="flex items-center gap-2 mt-2 flex-wrap">
+                {option.tags.map((t) => (
+                  <span
+                    key={t}
+                    className="text-xs border rounded px-2 py-1 text-gray-600 bg-gray-50"
+                  >
+                    {t}
+                  </span>
+                ))}
+              </div>
             </div>
 
-            <p className="text-sm mb-2">Lower</p>
-            <div className="grid grid-cols-6 gap-3">
-              {lower.map((s) => (
-                <button
-                  key={s}
-                  onClick={() => toggleSeat(s)}
-                  className={`border rounded px-3 py-2 ${seatClass(s)}`}
-                >
-                  {s}
-                </button>
-              ))}
+            {/* Rating */}
+            <div className="text-right">
+              <div className="text-xs text-gray-500">{option.ratingCount} ratings</div>
+              <div className="mt-1 inline-flex items-center gap-2 rounded px-2 py-0.5 bg-green-50 text-green-800 text-sm font-semibold">
+                {option.rating} / 5
+              </div>
             </div>
           </div>
 
-          <div className="w-[360px] border-l p-4 overflow-auto">
-            <button className="mt-4 w-full py-3 rounded bg-gray-200 text-gray-700">
-              Continue
-            </button>
+          {/* Short Description */}
+          <div className="mt-4 flex items-center gap-3">
+            <div className="h-1.5 w-1.5 bg-yellow-500 rounded-full" />
+            <h4 className="font-semibold text-gray-800">{option.shortDesc}</h4>
           </div>
 
+          {/* Premium Badge */}
+          <div className="mt-3 flex items-center gap-3">
+            {option.badges.map((b) => (
+              <Badge key={b}>{b}</Badge>
+            ))}
+          </div>
+
+          {/* Features 2 columns */}
+          <div className="mt-4 grid grid-cols-2 gap-4">
+
+            {/* Column 1 */}
+            <div className="space-y-3">
+              <div className="flex items-center gap-3">
+                <div className="rounded-full bg-gray-50 p-2 border">
+                  <Thermometer size={16} />
+                </div>
+                <div className="text-sm">Sanitiser</div>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <div className="rounded-full bg-gray-50 p-2 border">
+                  <Globe size={16} />
+                </div>
+                <div className="text-sm">Route expert, Multilingual</div>
+              </div>
+            </div>
+
+            {/* Column 2 */}
+            <div className="space-y-3">
+              {option.features.map((f) => (
+                <div key={f} className="flex items-start gap-3">
+                  <CheckCircle size={16} className="text-blue-500 mt-1" />
+                  <div className="text-sm">{f}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Price Column */}
+        <div className="w-[240px] border-l pl-5 flex flex-col items-end justify-between">
+          <div className="text-right">
+            <div className="text-3xl font-bold text-gray-800">₹{option.price}</div>
+            <div className="text-xs text-gray-500">+ ₹{option.taxes} taxes & fees</div>
+          </div>
+
+          <button className="w-full mt-4 py-3 rounded-md bg-[#2d3b78] text-white font-semibold transition hover:bg-gradient-to-r hover:from-[#e93216] hover:to-[#c01d06] cursor-pointer">
+            SELECT
+          </button>
         </div>
       </div>
     </div>
@@ -203,28 +258,16 @@ function SeatLayout({
 }
 
 /* ---------------------------
-   Main Component (CAB SEARCH)
+   MAIN PAGE (Sort + Date + Sidebar + Cars)
    --------------------------- */
 
 export default function CabSearchFullPage(): JSX.Element {
-  const [showSeats, setShowSeats] = useState(false);
-  const [activeCab, setActiveCab] = useState<CabItem | null>(null);
-
-  const openSeatsForCab = (cab: CabItem) => {
-    setActiveCab(cab);
-    setShowSeats(true);
-  };
-
-  const closeSeats = () => {
-    setShowSeats(false);
-    setActiveCab(null);
-  };
-
   return (
     <div className="min-h-screen bg-[#f7f7f7]">
+
       <div className="max-w-7xl mx-auto py-6 px-4">
 
-        {/* Sort Bar */}
+        {/* SORT BAR (RESTORED) */}
         <div className="bg-white rounded-md px-6 py-4 mb-6 flex items-center justify-between shadow-sm">
           <div className="flex items-center gap-6 text-sm text-gray-600">
             <span className="font-medium">Sort By:</span>
@@ -238,29 +281,29 @@ export default function CabSearchFullPage(): JSX.Element {
 
         <div className="flex gap-6">
 
-          {/* LEFT SIDEBAR (REORDERED + PRICE DROP ADDED) */}
+          {/* LEFT SIDEBAR */}
           <aside className="w-[320px] bg-white rounded-lg p-6 shadow-sm h-max">
-
-            {/* 1️⃣ PRICE DROP */}
+            
+            <h3 className="text-lg font-semibold mb-5">Filters</h3>
+            {/* 1. Price Drop */}
             <div className="mb-6">
-              <h4 className="text-sm font-semibold mb-2">Price Drop</h4>
-              <CheckItem label="Show price drop only" />
+              <CheckItem label="Drop Price" />
             </div>
 
-            {/* 2️⃣ CAB TYPE */}
+            {/* 2. Cab Type */}
             <div className="mb-6">
               <h4 className="text-sm font-semibold mb-2">Cab Type</h4>
               <CheckItem label="Sedan" icon={<Car size={16} />} />
               <CheckItem label="SUV" icon={<Car size={16} />} />
             </div>
 
-            {/* 3️⃣ PRICE RANGE */}
+            {/* 3. Price Range */}
             <div className="mb-6">
               <h4 className="text-sm font-semibold mb-2">Price Range</h4>
               <input type="range" min={500} max={6500} className="w-full" />
             </div>
 
-            {/* 4️⃣ PICKUP TIME */}
+            {/* 4. Pickup Time */}
             <div className="mb-6">
               <h4 className="text-sm font-semibold mb-2">Pickup Time</h4>
               <CheckItem label="Morning" icon={<Sunrise size={16} />} />
@@ -269,7 +312,7 @@ export default function CabSearchFullPage(): JSX.Element {
               <CheckItem label="Night" icon={<Moon size={16} />} />
             </div>
 
-            {/* 5️⃣ FUEL TYPE */}
+            {/* 5. Fuel Type */}
             <div className="mb-6">
               <h4 className="text-sm font-semibold mb-2">Fuel Type</h4>
               <CheckItem icon={<Zap size={16} />} label="Electric" count={1} />
@@ -278,7 +321,7 @@ export default function CabSearchFullPage(): JSX.Element {
               <CheckItem icon={<Flame size={16} />} label="Petrol" count={5} />
             </div>
 
-            {/* 6️⃣ CAR MODEL */}
+            {/* 6. Car Model */}
             <div className="mb-6">
               <h4 className="text-sm font-semibold mb-2">Car Model</h4>
               {[
@@ -296,7 +339,7 @@ export default function CabSearchFullPage(): JSX.Element {
               ))}
             </div>
 
-            {/* 7️⃣ PASSENGER CAPACITY */}
+            {/* 7. Passenger Capacity */}
             <div>
               <h4 className="text-sm font-semibold mb-2">Passenger Capacity</h4>
               <CheckItem label="4 passenger seats" icon={<User size={16} />} />
@@ -305,112 +348,37 @@ export default function CabSearchFullPage(): JSX.Element {
 
           </aside>
 
-          {/* RIGHT: CAB RESULTS */}
-          <main className="flex-1 max-w-[900px] mx-auto">
+          {/* RIGHT SECTION — CARS + DATE TAB */}
+          <main className="flex-1">
 
-            {/* Date Tabs */}
-            <div className="bg-white rounded-lg p-3 mb-6 shadow-sm">
-              <div className="flex items-center gap-2 overflow-x-auto">
-                <button className="min-w-[80px] py-3 px-4 border-b-4 border-[#2d3b78] font-semibold text-sm">
-                  01 Mon
-                </button>
-
-                {dates.slice(1).map((d) => (
-                  <div
-                    key={d}
-                    className="min-w-[80px] py-3 px-4 text-sm text-gray-600"
-                  >
-                    {d}
-                  </div>
-                ))}
-
-                <ChevronsLeft size={18} className="text-gray-400 ml-auto" />
+            {/* DATE SELECTOR (RESTORED) */}
+            <div className="bg-white rounded-lg p-3 mb-6 shadow-sm flex items-center gap-2 overflow-x-auto">
+              <button className="min-w-[80px] py-3 px-4 border-b-4 border-[#2d3b78] font-semibold text-sm">
+                Today
+              </button>
+              <div className="min-w-[80px] py-3 px-4 text-sm text-gray-600">
+                Tomorrow
               </div>
+              <div className="min-w-[80px] py-3 px-4 text-sm text-gray-600">
+                03 Wed
+              </div>
+              <div className="min-w-[80px] py-3 px-4 text-sm text-gray-600">
+                04 Thu
+              </div>
+
+              <ChevronsLeft className="ml-auto text-gray-400" size={18} />
             </div>
 
-            {/* Cab List */}
-            <div className="space-y-5">
-              {cabsSample.map((c) => (
-                <article
-                  key={c.id}
-                  className="bg-white shadow-sm rounded-lg flex border overflow-hidden hover:shadow-lg transition"
-                >
-                  <div className="flex-1 p-5">
-                    <div className="flex justify-between">
-                      <div>
-                        <h3 className="text-lg font-semibold">{c.operator}</h3>
-                        <p className="text-sm text-gray-500">{c.type}</p>
-
-                        <div className="flex items-center gap-3 mt-3 text-sm">
-                          <div className="bg-green-600 text-white px-2 py-1 rounded flex items-center gap-1">
-                            <Star size={14} /> {c.rating}
-                          </div>
-                          <div className="text-gray-500 flex items-center gap-1">
-                            <User size={14} /> {c.reviews}
-                          </div>
-                          <div className="text-gray-600 flex items-center gap-1">
-                            <BadgeCheck size={14} /> Verified Driver
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="text-right text-sm text-gray-600">
-                        <p className="text-xs">{c.departDate}</p>
-                        <p className="text-2xl font-bold">{c.departTime}</p>
-                        <p className="text-sm">{c.departCity}</p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center justify-center gap-3 text-sm text-gray-500 my-4">
-                      <span className="text-gray-300">• • •</span>
-                      <span className="border px-3 py-1 rounded-full">{c.duration}</span>
-                      <span className="text-gray-300">• • •</span>
-                    </div>
-
-                    <div className="border-t pt-3 flex items-center gap-4 text-xs text-gray-600">
-                      <button className="hover:text-[#2d3b78] flex items-center gap-1">
-                        Pickup & Drop Details <ChevronDown size={14} />
-                      </button>
-                      <button className="hover:text-[#2d3b78] flex items-center gap-1">
-                        Amenities <ChevronDown size={14} />
-                      </button>
-                      <span className="text-orange-500">₹50 Off Today</span>
-                    </div>
-                  </div>
-
-                  <div className="w-[230px] border-l p-5 flex flex-col items-end justify-center">
-                    <p className="text-sm text-gray-500">Starting at</p>
-                    <p className="text-3xl font-bold">₹{c.startsAt}</p>
-
-                    <button
-                      className="mt-4 w-full py-3 rounded text-white"
-                      style={{ backgroundColor: "#2d3b78" }}
-                      onClick={() => openSeatsForCab(c)}
-                    >
-                      Select Cab
-                    </button>
-
-                    <p className="mt-2 text-xs text-gray-500">
-                      {c.seatsAvailable} Seats
-                    </p>
-                  </div>
-                </article>
+            {/* CARS */}
+            <div className="space-y-6">
+              {sampleOptions.map((car) => (
+                <CarCard key={car.id} option={car} />
               ))}
             </div>
+
           </main>
         </div>
       </div>
-
-      {showSeats && activeCab && (
-        <SeatLayout
-          upper={activeCab.upperSeats}
-          lower={activeCab.lowerSeats}
-          booked={activeCab.booked}
-          female={activeCab.female}
-          male={activeCab.male}
-          onClose={closeSeats}
-        />
-      )}
     </div>
   );
 }

@@ -96,6 +96,7 @@ export default function Header() {
                     <a href="/Bus" className="hover:text-[#e92d16]">Buses</a>
                     <a href="#" className="hover:text-[#e92d16]">Cruises</a>
                     <a href="#" className="hover:text-[#e92d16]">Tours</a>
+                    <a href="/Inquiry" className="hover:text-[#e92d16]">Inquiry</a>
                 </nav>
 
                 {/* RIGHT SIDE — Login / Signup */}

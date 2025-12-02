@@ -167,7 +167,7 @@ const BusSearch: React.FC = () => {
             <button
               type="button"
               onClick={swapCities}
-              className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[#2d3b78] text-white transition hover:bg-[#232d5d]"
+              className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[#2d3b78] text-white transition cursor-pointer hover:bg-gradient-to-r hover:from-[#e93216] hover:to-[#c01d06]"
               title="Swap"
             >
               <ArrowLeftRight size={18} />
@@ -242,7 +242,7 @@ const BusSearch: React.FC = () => {
             {/* SEARCH BUTTON */}
             <button
               type="submit"
-              className="flex w-full items-center justify-center gap-2 rounded-full bg-[#2d3b78] px-7 py-3.5 text-sm font-semibold text-white transition hover:bg-gradient-to-r hover:from-[#e93216] hover:to-[#c01d06] cursor-pointer transition sm:w-auto"
+              className="flex w-full items-center justify-center gap-2 rounded-full bg-[#2d3b78] px-7 py-3.5 text-sm font-semibold text-white transition hover:bg-gradient-to-r hover:from-[#e93216] hover:to-[#c01d06] cursor-pointer sm:w-auto"
             >
               <span className="flex h-8 w-8 items-center justify-center rounded-full border border-white/50 bg-white/10">
                 <Search size={18} />
