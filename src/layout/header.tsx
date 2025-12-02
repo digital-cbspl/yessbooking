@@ -10,7 +10,7 @@ import {
     Twitter,
     Instagram,
     Linkedin,
-    Search,
+    User,
 } from "lucide-react";
 import { Logo, Logob } from "../assests/image/image";
 
@@ -28,43 +28,39 @@ export default function Header() {
 
     return (
         <header className="w-full text-white sticky top-0 z-30 bg-[#2d3b78]">
-            {/* FIXED LOGO - Always visible */}
+            
+            {/* FIXED LOGO */}
             <a href="/" rel="noopener noreferrer">
-            <div className="absolute top-0 left-10 z-40 bg-white p-5 pl-8 cursor-pointer">
-                
-                <Image
-                    src={Logo.src}
-                    alt="SwiftRide"
-                    width={90}
-                    height={100}
-                    className="object-contain"
-                />
-                <Image
-                    src={Logob.src}
-                    alt="SwiftRide"
-                    width={90}
-                    height={80}
-                    className="object-contain"
-                />
-            </div>
+                <div className="absolute top-0 left-10 z-40 bg-white p-5 pl-8 cursor-pointer">
+                    <Image
+                        src={Logo.src}
+                        alt="SwiftRide"
+                        width={90}
+                        height={100}
+                        className="object-contain"
+                    />
+                    <Image
+                        src={Logob.src}
+                        alt="SwiftRide"
+                        width={90}
+                        height={80}
+                        className="object-contain"
+                    />
+                </div>
             </a>
 
-            {/* TOPBAR - Hides on scroll */}
+            {/* TOPBAR */}
             <div
                 className={`relative w-full transition-all duration-300 overflow-hidden
                 px-15 border-b border-white bg-[#2d3b78]
-                ${hideTopbar ? "h-0 opacity-0" : "h-[40px] opacity-100"}
-            `}
+                ${hideTopbar ? "h-0 opacity-0" : "h-[40px] opacity-100"}`}
             >
-                {/* BACKGROUND */}
                 <div className="absolute inset-0 z-0 flex">
                     <div className="w-[70%] bg-[#2d3b78]"></div>
                     <div className="w-[30%] bg-white diagonal-bg"></div>
                 </div>
 
-                {/* CONTENT */}
                 <div className="relative z-10 h-full flex items-center justify-between ml-36">
-                    {/* Info */}
                     <div className="flex items-center gap-10 text-sm">
                         <div className="flex items-center gap-2">
                             <Building2 className="text-[#e92d16]" size={17} />
@@ -80,7 +76,6 @@ export default function Header() {
                         </div>
                     </div>
 
-                    {/* Social */}
                     <div className="flex items-center gap-4 text-black text-lg cursor-pointer">
                         <Facebook size={19} className="hover:text-[#e92d16]" />
                         <Twitter size={19} className="hover:text-[#e92d16]" />
@@ -90,8 +85,9 @@ export default function Header() {
                 </div>
             </div>
 
-            {/* NAVBAR - Always sticky */}
+            {/* NAVBAR */}
             <div className="w-full bg-[#2d3b78] py-5 px-10 flex items-center justify-center shadow-md">
+                
                 <nav className="flex items-center gap-12 text-lg font-light ml-36">
                     <a href="#" className="hover:text-[#e92d16]">Flights</a>
                     <a href="#" className="hover:text-[#e92d16]">Hotels</a>
@@ -102,15 +98,15 @@ export default function Header() {
                     <a href="#" className="hover:text-[#e92d16]">Tours</a>
                 </nav>
 
-                {/* RIGHT SIDE */}
+                {/* RIGHT SIDE — Login / Signup */}
                 <div className="flex items-center gap-6 absolute right-14">
-                    <Search size={24} className="hover:text-[#e92d16] cursor-pointer" />
-
-                    <button className="bg-white text-black cursor-pointer font-semibold px-6 py-3 rounded-md transition-all duration-300
+                    <button className="bg-white text-black cursor-pointer font-semibold px-6 py-3 rounded-md flex items-center gap-2 transition-all duration-300
                         hover:bg-gradient-to-r hover:from-[#e93216] hover:to-[#c01d06] hover:text-white">
-                        BOOK NOW
+                        <User size={20} />
+                        Login / Signup
                     </button>
                 </div>
+
             </div>
         </header>
     );

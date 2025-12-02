@@ -1,13 +1,15 @@
 import { Amex, Mastercard, Visa, Logo, Logob } from "../assests/image/image";
-import { Facebook, Twitter, Instagram, Linkedin } from "lucide-react";
+import { Facebook, Twitter, Instagram, Linkedin, Lock } from "lucide-react";
 
 export default function Footer() {
   return (
-    <footer className="w-full bg-[#f8faff] pt-16 pb-10 text-gray-700">
-      <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-10">
+    <footer className="w-full bg-[#f8faff] pt-16 pb-6 text-gray-700">
+
+      {/* TOP SECTION */}
+      <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-10 items-start">
 
         {/* LOGO + ADDRESS */}
-        <div>
+        <div className="h-full">
           <div className="flex items-center gap-3">
             <img src={Logo.src} alt="Logo 1" className="h-10 w-auto" />
             <img src={Logob.src} alt="Logo 2" className="h-10 w-auto" />
@@ -28,7 +30,7 @@ export default function Footer() {
         </div>
 
         {/* COMPANY */}
-        <div>
+        <div className="h-full">
           <h2 className="text-lg font-semibold text-gray-900">Company</h2>
           <div className="w-10 h-[3px] bg-[#2d3b78] mt-1 mb-4 rounded-full"></div>
 
@@ -43,7 +45,7 @@ export default function Footer() {
         </div>
 
         {/* OTHER LINKS */}
-        <div>
+        <div className="h-full">
           <h2 className="text-lg font-semibold text-gray-900">Other Links</h2>
           <div className="w-10 h-[3px] bg-[#2d3b78] mt-1 mb-4 rounded-full"></div>
 
@@ -58,7 +60,7 @@ export default function Footer() {
         </div>
 
         {/* SUBSCRIBE */}
-        <div>
+        <div className="h-full">
           <h2 className="text-lg font-semibold text-gray-900">Subscribe now</h2>
           <div className="w-10 h-[3px] bg-[#2d3b78] mt-1 mb-4 rounded-full"></div>
 
@@ -66,44 +68,29 @@ export default function Footer() {
             Subscribe for latest updates & promotions
           </p>
 
-          {/* EMAIL BOX */}
           <div className="mt-4">
-            <div className="flex items-center border rounded-xl shadow-sm bg-white">
+            <div className="flex items-center border rounded-xl shadow-sm bg-white overflow-hidden">
               <input
                 type="email"
                 className="flex-1 px-4 py-3 outline-none bg-transparent"
                 placeholder="Email address"
               />
-              <button className="bg-[#2d3b78] text-white px-5 py-2 rounded-r-xl font-semibold">
+              <button className="bg-[#2d3b78] text-white px-5 py-2 font-semibold hover:bg-[#1b254f] hover:bg-gradient-to-r hover:from-[#e93216] hover:to-[#c01d06] cursor-pointer transition">
                 Go
               </button>
             </div>
 
             <p className="text-sm text-gray-500 mt-2 flex items-center gap-1">
-              <span>🔒</span> Your information is safe with us.
+              <Lock className="w-4 h-4" /> Your information is safe with us.
             </p>
-          </div>
-
-          {/* SOCIAL ICONS */}
-          <div className="flex items-center gap-4 mt-6">
-            <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
-              <Facebook className="w-5 h-5" />
-            </div>
-            <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
-              <Twitter className="w-5 h-5" />
-            </div>
-            <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
-              <Instagram className="w-5 h-5" />
-            </div>
-            <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
-              <Linkedin className="w-5 h-5" />
-            </div>
           </div>
         </div>
       </div>
 
-      {/* BOTTOM LINKS */}
-      <div className="max-w-7xl mx-auto px-6 mt-12 flex flex-wrap items-center justify-between gap-3 text-sm text-gray-600">
+      {/* BOTTOM LINKS + SOCIAL ICONS ON SAME LINE */}
+      <div className="max-w-7xl mx-auto px-6 mt-4 flex flex-wrap justify-between items-center gap-6 text-sm text-gray-600">
+
+        {/* BOTTOM LINKS */}
         <div className="flex items-center gap-4">
           <span>Terms & Conditions</span>
           <span className="w-1 h-1 bg-gray-400 rounded-full"></span>
@@ -112,18 +99,44 @@ export default function Footer() {
           <span>Help Center</span>
         </div>
 
+        {/* SOCIAL ICONS */}
+        <div className="flex items-center gap-4">
+          <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center hover:bg-[#2d3b78] hover:text-white cursor-pointer">
+            <Facebook className="w-5 h-5" />
+          </div>
+          <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center hover:bg-[#2d3b78] hover:text-white cursor-pointer">
+            <Twitter className="w-5 h-5" />
+          </div>
+          <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center hover:bg-[#2d3b78] hover:text-white cursor-pointer">
+            <Instagram className="w-5 h-5" />
+          </div>
+          <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center hover:bg-[#2d3b78] hover:text-white cursor-pointer">
+            <Linkedin className="w-5 h-5" />
+          </div>
+        </div>
+      </div>
+
+      {/* SEPARATOR */}
+      <div className="max-w-7xl mx-auto px-6 mt-2">
+        <div className="h-px w-full bg-gray-300"></div>
+      </div>
+
+      {/* COPYRIGHT + WE ACCEPT ON SAME LINE */}
+      <div className="max-w-7xl mx-auto px-6 mt-6 flex flex-wrap justify-between items-center gap-4 text-sm text-gray-600">
+
+        {/* COPYRIGHT */}
+        <div>
+          © 2025 Yess Booking | All Rights Reserved || Developed by{" "}
+          <a href="/" target="_blank" rel="noopener noreferrer">CBSPL</a>.
+        </div>
+
+        {/* WE ACCEPT */}
         <div className="flex items-center gap-3">
           <span>We Accept</span>
           <img src={Visa.src} className="h-6" />
           <img src={Mastercard.src} className="h-6" />
           <img src={Amex.src} className="h-6" />
         </div>
-      </div>
-
-      {/* COPYRIGHT */}
-      <div className="max-w-7xl mx-auto px-6 mt-6 text-center text-sm text-gray-600">
-        © 2025 Yess Booking | All Rights Reserved || Developed by{" "}
-        <a href="/" target="_blank" rel="noopener noreferrer">CBSPL</a>.
       </div>
     </footer>
   );
