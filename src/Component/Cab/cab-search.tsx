@@ -249,7 +249,7 @@ export default function CabSearch() {
   --------------------------------------- */
 
   return (
-    <div className="bg-slate-50 text-slate-900 min-h-screen">
+    <div className="bg-slate-50 text-slate-900 h-auto">
       <section className="relative z-20 flex min-h-[55vh] items-center justify-center bg-gradient-to-br from-sky-100 via-sky-50 to-white px-4 py-8">
 
         {/* Background Image */}
