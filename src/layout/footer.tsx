@@ -9,8 +9,8 @@ export default function Footer() {
         {/* LOGO + ADDRESS */}
         <div>
           <div className="flex items-center gap-3">
-            <img src={Logo.src} alt="Logo 1" className="h-12 w-auto" />
-            <img src={Logob.src} alt="Logo 2" className="h-12 w-auto" />
+            <img src={Logo.src} alt="Logo 1" className="h-10 w-auto" />
+            <img src={Logob.src} alt="Logo 2" className="h-10 w-auto" />
           </div>
 
           <p className="mt-4 leading-relaxed">
