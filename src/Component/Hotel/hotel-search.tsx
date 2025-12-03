@@ -120,7 +120,7 @@ const HotelSearch: React.FC = () => {
         >
           <div className="max-w-3xl">
             <h1 className="text-3xl sm:text-4xl lg:text-[2.5rem] font-bold tracking-wide text-slate-900">
-              A Journey of Comfort Awaits You
+              A Stay of Comfort Awaits You
             </h1>
             <p className="mt-2 text-base sm:text-lg text-slate-600">
               Your Trusted Partner for Smooth Hotel Booking
