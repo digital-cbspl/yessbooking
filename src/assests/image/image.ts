@@ -30,3 +30,6 @@ export { default as Airline6 } from "./spice-jet.png";
 export { default as Visa } from "./visa.png";
 export { default as Mastercard } from "./master-card.png";
 export { default as Amex } from "./amex.png";
+export { default as Bed1 } from "./h1.jpg";
+export { default as Bed2 } from "./h2.jpg";
+export { default as Bed3 } from "./h3.jpg";
