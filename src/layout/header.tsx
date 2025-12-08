@@ -91,7 +91,7 @@ export default function Header() {
                 <nav className="flex items-center gap-12 text-lg font-light ml-36">
                     <a href="#" className="hover:text-[#e92d16]">Flights</a>
                     <a href="/Hotel" className="hover:text-[#e92d16]">Hotels</a>
-                    <a href="#" className="hover:text-[#e92d16]">Trains</a>
+                    <a href="/Train" className="hover:text-[#e92d16]">Trains</a>
                     <a href="/Cab" className="hover:text-[#e92d16]">Cabs</a>
                     <a href="/Bus" className="hover:text-[#e92d16]">Buses</a>
                     <a href="#" className="hover:text-[#e92d16]">Cruises</a>
