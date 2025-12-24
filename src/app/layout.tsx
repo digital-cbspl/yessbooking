@@ -4,6 +4,8 @@ import "./globals.css";
 import Header from "../layout/header";
 import Footer from "../layout/footer";
 
+
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -36,3 +38,5 @@ export default function RootLayout({
     </html>
   );
 }
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { JSX, useState } from "react";
+import React, { JSX, useEffect, useState } from "react";
 import {
   Star,
   User,
@@ -13,7 +13,10 @@ import {
   X,
   Search,
   Truck,
+  BedSingle,
+  Armchair,
 } from "lucide-react";
+import Script from "next/script";
 
 /* ---------------------------
    Types & Sample Data
@@ -76,7 +79,7 @@ const busesSample: BusItem[] = [
     upperSeats: Array.from({ length: 18 }, (_, i) => `U${i + 1}`),
     lowerSeats: Array.from({ length: 18 }, (_, i) => `L${i + 1}`),
     booked: ["U6", "U9", "L5", "L7"],
-    female: ["U2", "U5", "L6"],
+    female: ["U2", "U5", "L6", "L2"],
     male: ["U7", "L8", "U12"],
     prices: [1080, 1280, 1980, 2280],
   },
@@ -85,17 +88,7 @@ const busesSample: BusItem[] = [
 /* ---------------------------
    Seat Layout Component
    --------------------------- */
-
-function LegendBox({ color, label }: { color: string; label: string }) {
-  return (
-    <div className="flex items-center gap-2">
-      <div className={`w-5 h-5 rounded border ${color}`} />
-      <div className="text-xs text-gray-600">{label}</div>
-    </div>
-  );
-}
-
-type SeatLayoutProps = {
+  type SeatLayoutProps = {
   upper: string[];
   lower: string[];
   booked?: string[];
@@ -105,165 +98,374 @@ type SeatLayoutProps = {
   onClose: () => void;
 };
 
+
+
+type SeatStatus = "available" | "booked" | "selected" | "ladies";
+
+/* ---------------- TOOLTIP ---------------- */
+
+function SeatTooltip({ seatNo, price }: { seatNo: string; price: number }) {
+  return (
+    <div className="absolute -top-12 left-1/2 -translate-x-1/2 hidden group-hover:flex flex-col items-center z-30">
+      <div className="bg-black text-white text-xs px-2 py-1 rounded">
+        <div className="font-semibold">{seatNo}</div>
+        <div>₹{price}</div>
+      </div>
+      <span className="w-2 h-2 bg-black rotate-45 -mt-1" />
+    </div>
+  );
+}
+
+/* ---------------- LOWER SEAT (GOIBIBO SVG – HORIZONTAL) ---------------- */
+
+function LowerSeat({
+  seatNo,
+  price,
+  status,
+  onClick,
+}: {
+  seatNo: string;
+  price: number;
+  status: SeatStatus;
+  onClick: () => void;
+}) {
+  const mainFill =
+    status === "booked"
+      ? "#D8D8D8"
+      : status === "selected"
+      ? "#a5f1c1ff"
+      : status === "ladies"
+      ? "#FA3988"
+      : "#FFFFFF";
+
+  return (
+    <div
+      className="relative group cursor-pointer"
+      onClick={status !== "booked" ? onClick : undefined}
+    >
+      <SeatTooltip seatNo={seatNo} price={price} />
+
+      <svg width="18" height="18" viewBox="0 0 18 18">
+        <g fill="none" fillRule="evenodd">
+          <rect
+            x="0.75"
+            y="0.75"
+            width="14.5"
+            height="14.5"
+            rx="2"
+            fill={mainFill}
+            stroke="#8F908C"
+            strokeWidth="0.75"
+          />
+          <path
+            d="M14.55 3.736H8.113a.608.608 0 01-.614-.6V1.184c0-.332.275-.6.614-.6h8.772c.339 0 .614.268.614.6v15.59c0 .332-.275.6-.614.6H8.114a.607.607 0 01-.614-.6v-1.952c0-.331.275-.6.614-.6h6.435V3.736z"
+            fill="#C7C7C2"
+            stroke="#7C7E7A"
+            strokeWidth="0.75"
+          />
+        </g>
+      </svg>
+    </div>
+  );
+}
+
+/* ---------------- UPPER SLEEPER ---------------- */
+
+function UpperSleeper({
+  seatNo,
+  price,
+  status,
+  onClick,
+}: {
+  seatNo: string;
+  price: number;
+  status: SeatStatus;
+  onClick: () => void;
+}) {
+  const baseFill =
+    status === "booked"
+      ? "#D8D8D8"
+      : status === "selected"
+      ? "#a5f1c1ff"
+      : "#FFFFFF";
+
+  const sideFill = status === "ladies" ? "#FA3988" : "#C7C7C2";
+
+  return (
+    <div
+      className="relative group cursor-pointer"
+      onClick={status !== "booked" ? onClick : undefined}
+    >
+      <SeatTooltip seatNo={seatNo} price={price} />
+
+      <svg width="44" height="18" viewBox="0 0 51 22">
+        <g fill="none" stroke="#979797" strokeWidth="0.75">
+          <path
+            fill={baseFill}
+            d="M47.875.375h-44.6c-.719 0-1.374.295-1.85.771a2.616 2.616 0 00-.769 1.852v15.086c0 .721.294 1.378.77 1.853.473.475 1.127.77 1.85.77h44.6c.719 0 1.374-.295 1.85-.772a2.61 2.61 0 00.769-1.851V2.998c0-.722-.294-1.378-.77-1.854a2.606 2.606 0 00-1.85-.769z"
+          />
+          <path
+            fill={sideFill}
+            d="M42.526 2.68h2.385a1.628 1.628 0 011.631 1.628v12.465c0 .453-.18.86-.475 1.153a1.63 1.63 0 01-1.156.475h-2.385a1.623 1.623 0 01-1.631-1.628V4.308c0-.453.18-.859.474-1.152a1.632 1.632 0 011.157-.476z"
+          />
+        </g>
+      </svg>
+    </div>
+  );
+}
+
+/* ---------------- SEAT LAYOUT ---------------- */
+
 function SeatLayout({
   upper,
   lower,
   booked = [],
   female = [],
-  male = [],
   prices = [],
   onClose,
 }: SeatLayoutProps) {
   const [selected, setSelected] = useState<string[]>([]);
+  const [boarding, setBoarding] = useState<string | null>(null);
+  const [dropping, setDropping] = useState<string | null>(null);
   const [activeFare, setActiveFare] = useState<number | "All">("All");
 
   const toggleSeat = (s: string) => {
     if (booked.includes(s)) return;
-    setSelected((prev) => (prev.includes(s) ? prev.filter((x) => x !== s) : [...prev, s]));
+    setSelected((p) =>
+      p.includes(s) ? p.filter((x) => x !== s) : [...p, s]
+    );
   };
 
-  const seatClass = (s: string) => {
-    if (selected.includes(s)) return "bg-[#c5f0d0] border-[#2d8a5a]";
-    if (booked.includes(s)) return "bg-gray-300 border-gray-400 text-gray-600";
-    if (female.includes(s)) return "bg-pink-100 border-pink-300";
-    if (male.includes(s)) return "bg-blue-100 border-blue-300";
-    return "bg-white border-gray-300";
+  const statusOf = (s: string): SeatStatus => {
+    if (booked.includes(s)) return "booked";
+    if (selected.includes(s)) return "selected";
+    if (female.includes(s)) return "ladies";
+    return "available";
   };
+
+  const farePerSeat =
+    activeFare === "All" ? prices[0] ?? 0 : activeFare;
+
+  const totalFare = selected.length * farePerSeat;
+
+  useEffect(() => {
+  console.log("Razorpay on window:", (window as any).Razorpay);
+}, []);
+
+const handlePayment = async () => {
+  if (!boarding || !dropping || selected.length === 0) return;
+
+  const res = await fetch("/api/create-order", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ amount: totalFare }),
+  });
+
+  const order = await res.json();
+
+  const options = {
+    key: process.env.NEXT_PUBLIC_RAZORPAY_KEY,
+    amount: order.amount,
+    currency: "INR",
+    name: "Bus Booking",
+    description: `Seats: ${selected.join(", ")}`,
+    order_id: order.id,
+    handler: function (response: any) {
+      alert("Payment Successful");
+      console.log(response);
+      onClose();
+    },
+    theme: { color: "#2d3b78" },
+  };
+
+  const RazorpayConstructor = (window as any).Razorpay;
+  if (!RazorpayConstructor) {
+    alert("Razorpay SDK failed to load");
+    return;
+  }
+
+  const rzp = new RazorpayConstructor(options);
+  rzp.open();
+};
+
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-6">
-      <div className="bg-white rounded-lg w-full max-w-[1100px] h-[85vh] shadow-xl overflow-hidden flex flex-col">
+    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-6">
+      <div className="bg-white w-full max-w-[1200px] h-[85vh] rounded-lg flex overflow-hidden">
 
-        {/* Header */}
-        <div className="flex justify-between p-4 border-b">
-          <div>
-            <h3 className="font-semibold">Select Seats</h3>
-            <p className="text-xs text-gray-500">Click seat to select/deselect</p>
-          </div>
+        {/* BOARDING */}
+        <div className="w-[260px] border-r border-gray-200 p-4">
+          <h3 className="font-semibold mb-3">1 · Boarding Point</h3>
 
-          <div className="flex items-center gap-4">
-            <LegendBox color="bg-white border-gray-300" label="Available" />
-            <LegendBox color="bg-pink-100 border-pink-300" label="Female" />
-            <LegendBox color="bg-blue-100 border-blue-300" label="Male" />
-            <LegendBox color="bg-gray-300 border-gray-400" label="Booked" />
-            <LegendBox color="bg-[#c5f0d0] border-[#2d8a5a]" label="Selected" />
+          <label className="block rounded p-3 mb-3 cursor-pointer">
+            <input
+              type="radio"
+              name="boarding"
+              onChange={() => setBoarding("Bhubaneswar")}
+            />
+            <div className="font-medium">13:00 · Bhubaneswar</div>
+            <div className="text-xs text-gray-500">
+              Apollo Tyre Waiting Lounge
+            </div>
+          </label>
+        </div>
 
-            <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded">
+        {/* DROPPING */}
+        <div className="w-[260px] border-r border-gray-200 p-4">
+          <h3 className="font-semibold mb-3">2 · Dropping Point</h3>
+
+          {[
+            { time: "10:00", place: "Gummidipoondi" },
+            { time: "10:15", place: "RMK College" },
+            { time: "10:30", place: "Red Hills" },
+            { time: "10:35", place: "Puzhal" },
+          ].map((d) => (
+            <label key={d.place} className="block mb-3 cursor-pointer">
+              <input
+                type="radio"
+                name="dropping"
+                onChange={() => setDropping(d.place)}
+              />
+              <div className="font-medium">
+                {d.time} · {d.place}
+              </div>
+            </label>
+          ))}
+        </div>
+
+        {/* SEATS */}
+        <div className="flex-1 p-4 overflow-auto">
+
+          {/* HEADER */}
+          <div className="flex justify-between items-center mb-3">
+            <h3 className="font-semibold">Select your seat</h3>
+            <button onClick={onClose}>
               <X size={18} />
             </button>
           </div>
-        </div>
 
-        {/* Body */}
-        <div className="flex flex-1 overflow-hidden">
-          {/* Seats */}
-          <div className="flex-1 p-4 overflow-auto">
+          {/* LEGEND + FARE */}
+          <div className="flex flex-wrap justify-between items-center gap-4 mb-4">
 
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <div className="text-sm font-semibold">Seats Available</div>
-                <p className="text-xs text-gray-500">Click seats to select</p>
-              </div>
+            {/* LEGEND */}
+            <div className="flex items-center gap-6 text-sm text-gray-600">
+              <span className="flex items-center gap-2">
+                <span className="w-4 h-4 bg-gray-300 rounded" /> Booked
+              </span>
+              <span className="flex items-center gap-2">
+                <span className="w-4 h-4 bg-white border rounded" /> Available
+              </span>
+              <span className="flex items-center gap-2">
+                <span className="w-4 h-4 bg-pink-500 rounded" /> Ladies
+              </span>
+            </div>
 
-              <div className="flex gap-2">
+            {/* FARES */}
+            <div className="flex gap-2">
+              <button
+                onClick={() => setActiveFare("All")}
+                className={`px-3 py-1 rounded text-sm ${
+                  activeFare === "All"
+                    ? "bg-blue-600 text-white"
+                    : "bg-gray-100 text-gray-600"
+                }`}
+              >
+                All
+              </button>
+
+              {prices.map((p) => (
                 <button
-                  onClick={() => setActiveFare("All")}
+                  key={p}
+                  onClick={() => setActiveFare(p)}
                   className={`px-3 py-1 rounded text-sm ${
-                    activeFare === "All" ? "bg-[#e86a33] text-white" : "border bg-white"
+                    activeFare === p
+                      ? "bg-blue-600 text-white"
+                      : "bg-gray-100 text-gray-600"
                   }`}
                 >
-                  All
-                </button>
-
-                {prices.map((p) => (
-                  <button
-                    key={p}
-                    onClick={() => setActiveFare(p)}
-                    className={`px-3 py-1 rounded text-sm ${
-                      activeFare === p ? "bg-[#fff2ef] border-[#e86a33] text-[#e86a33]" : "border bg-white"
-                    }`}
-                  >
-                    ₹{p}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Upper */}
-            <p className="text-sm mb-2">Upper</p>
-            <div className="grid grid-cols-6 gap-3 mb-6">
-              {upper.map((s) => (
-                <button
-                  key={s}
-                  onClick={() => toggleSeat(s)}
-                  className={`border rounded px-3 py-2 ${seatClass(s)}`}
-                >
-                  {s}
+                  ₹{p}
                 </button>
               ))}
             </div>
-
-            {/* Lower */}
-            <p className="text-sm mb-2 flex items-center gap-2">
-              <Truck size={16} /> Lower
-            </p>
-
-            <div className="grid grid-cols-6 gap-3">
-              {lower.map((s) => (
-                <button
-                  key={s}
-                  onClick={() => toggleSeat(s)}
-                  className={`border rounded px-3 py-2 ${seatClass(s)}`}
-                >
-                  {s}
-                </button>
-              ))}
-            </div>
-
           </div>
 
-          {/* Right Summary */}
-          <div className="w-[360px] border-l p-4 overflow-auto">
-            <div className="relative mb-4">
-              <Search size={16} className="absolute left-3 top-3 text-gray-400" />
-              <input
-                className="pl-10 pr-3 py-2 border rounded w-full text-sm"
-                placeholder="Search Boarding Point"
-              />
+          {/* UPPER */}
+          <div className="border border-gray-200 rounded-lg flex mb-6">
+            <div className="w-10 bg-gray-100 flex items-center justify-center">
+              <span className="-rotate-90 text-xs font-semibold">UPPER</span>
             </div>
-
-            <div className="space-y-4 mb-4">
-              {["LB Nagar", "Ameerpet", "Miyapur"].map((p) => (
-                <label key={p} className="flex items-start gap-3 text-sm">
-                  <input type="checkbox" className="mt-1" />
-                  <div>{p}</div>
-                  <span className="ml-auto text-xs">20:30</span>
-                </label>
+            <div className="p-4 flex flex-col gap-4">
+              {[0, 6, 12].map((i) => (
+                <div key={i} className="flex gap-3">
+                  {upper.slice(i, i + 6).map((s, idx) => (
+                    <UpperSleeper
+                      key={s}
+                      seatNo={s}
+                      price={prices[idx % prices.length] ?? farePerSeat}
+                      status={statusOf(s)}
+                      onClick={() => toggleSeat(s)}
+                    />
+                  ))}
+                </div>
               ))}
             </div>
+          </div>
 
-            <div className="border-t pt-3 text-sm">
-              <div className="flex justify-between mb-2">
-                <span>Seat Selected:</span>
-                <span className="font-semibold">{selected.join(", ") || "-"}</span>
-              </div>
-
-              <div className="flex justify-between">
-                <span>Base Fare:</span>
-                <span className="font-semibold">-</span>
-              </div>
-
-              <button className="mt-4 w-full py-3 rounded bg-gray-200 text-gray-700" disabled>
-                Continue
-              </button>
+          {/* LOWER */}
+          <div className="border border-gray-200 rounded-lg flex">
+            <div className="w-10 bg-gray-100 flex items-center justify-center">
+              <span className="-rotate-90 text-xs font-semibold">LOWER</span>
+            </div>
+            <div className="p-4 grid grid-cols-6 gap-6">
+              {lower.map((s, idx) => (
+                <LowerSeat
+                  key={s}
+                  seatNo={s}
+                  price={prices[idx % prices.length] ?? farePerSeat}
+                  status={statusOf(s)}
+                  onClick={() => toggleSeat(s)}
+                />
+              ))}
             </div>
           </div>
+          <button
+  disabled={!boarding || !dropping || selected.length === 0}
+  onClick={handlePayment}
+  className={`mt-6 w-full py-3 rounded font-semibold text-white cursor-pointer transition hover:bg-gradient-to-r hover:from-[#e93216] hover:to-[#c01d06] ${
+    !boarding || !dropping || selected.length === 0
+      ? "bg-gray-300"
+      : "bg-[#2d3b78]"
+  }`}
+>
+  PROCEED TO PAY
+</button>
+
+          {/* SUMMARY */}
+          <div className="mt-6 border-t border-gray-200 pt-4 flex justify-between items-center">
+            <div className="text-sm">
+              <div>
+                Seats:{" "}
+                <span className="font-semibold">
+                  {selected.length ? selected.join(", ") : "-"}
+                </span>
+              </div>
+            </div>
+
+            <div className="text-right">
+              <div className="text-lg font-bold">₹{totalFare}</div>
+              <div>
+                Fare Details
+              </div>
+            </div>
+          </div>
+
         </div>
-
       </div>
     </div>
   );
 }
+
+
 
 /* ---------------------------
    Dropdown Checklist Component
@@ -313,6 +515,8 @@ function DropCheck({
    --------------------------- */
 
 export default function BusSearchFullPage(): JSX.Element {
+
+   
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [busType, setBusType] = useState<string[]>([]);
   const [depTime, setDepTime] = useState<string[]>([]);
@@ -338,6 +542,12 @@ export default function BusSearchFullPage(): JSX.Element {
   };
 
   return (
+    <>
+    <Script
+        src="https://checkout.razorpay.com/v1/checkout.js"
+        strategy="afterInteractive"
+      />
+      
     <div className="min-h-screen bg-[#f7f7f7]">
       <div className="max-w-7xl mx-auto py-6 px-4">
 
@@ -549,7 +759,7 @@ export default function BusSearchFullPage(): JSX.Element {
                     <p className="text-3xl font-bold">₹{b.startsAt}</p>
 
                     <button
-                      className="mt-4 w-full py-3 rounded text-white font-medium"
+                      className="mt-4 w-full py-3 rounded text-white font-medium transition hover:bg-gradient-to-r hover:from-[#e93216] hover:to-[#c01d06] cursor-pointer"
                       style={{ backgroundColor: "#2d3b78" }}
                       onClick={() => openSeatsForBus(b)}
                     >
@@ -581,5 +791,6 @@ export default function BusSearchFullPage(): JSX.Element {
         />
       )}
     </div>
+    </>
   );
 }
